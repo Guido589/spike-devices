@@ -97,7 +97,7 @@ void iceblk_t::handle_read_request() {
   for (reg_t sidx = 0; sidx < req_len; sidx++) {
     for (reg_t i = 0; i < BLKDEV_SECTOR_SIZE; i += 8) {
       read_blockdevice_u64(&data, sidx + req_offset, i);
-      simdram->store<uint64_t>(req_addr + sidx * BLKDEV_SECTOR_SIZE + i, data);
+      simdram->store<uint64_t>(req_addr + sidx * BLKDEV_SECTOR_SIZE + i, data, {}, sid);
     }
   }
 }
@@ -116,7 +116,7 @@ void iceblk_t::handle_write_request() {
   mmu_t* simdram = sim->debug_mmu;
   for (reg_t sidx = 0; sidx < req_len; sidx++) {
     for (reg_t i = 0; i < BLKDEV_SECTOR_SIZE; i+= 8) {
-      uint64_t data = simdram->load<uint64_t>(req_addr + sidx * BLKDEV_SECTOR_SIZE + i);
+      uint64_t data = simdram->load<uint64_t>(req_addr + sidx * BLKDEV_SECTOR_SIZE + i, {}, sid);
       write_blockdevice_u64(data, sidx, i);
     }
   }
